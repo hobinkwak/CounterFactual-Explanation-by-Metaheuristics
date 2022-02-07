@@ -1,0 +1,17 @@
+{
+  "ga": {
+    "max_num_iteration": 300,
+    "population_size": 1000,
+    "mutation_probability": 0.1,
+    "elit_ratio": 0.01,
+    "crossover_probability": 0.5,
+    "parents_portion": 0.3,
+    "crossover_type": "uniform",
+    "max_iteration_without_improv": 100
+  },
+  "woa": {
+    "n_whale": 100000,
+    "spiral": 0.5,
+    "n_iter": 100
+  }
+}
