@@ -57,9 +57,9 @@ class WOGenerator(BaseGenerator):
         d = np.abs(C[..., np.newaxis] * self.prey['position'] - self.whale['position'][idx])
         self.whale['position'][idx] = np.clip(self.prey['position'][0] - A[..., np.newaxis] * d, self.lb, self.ub)
 
-    def bubble_net(self, idx, b):
+    def bubble_net(self, idx):
         d_prime = np.abs(self.prey['position'] - self.whale['position'][idx])
-        l = (b -1) * np.random.random(size=len(idx[0])) + 1
+        l = np.random.uniform(-1, 1, size=len(idx[0]))
         self.whale["position"][idx] = np.clip(
             d_prime * np.exp(self.woa_param["spiral"] * l)[..., np.newaxis] * np.cos(2 * np.pi * l)[..., np.newaxis]
             + self.prey["position"],
@@ -67,7 +67,7 @@ class WOGenerator(BaseGenerator):
             self.ub,
         )
 
-    def optimize(self, a, b, obj_func):
+    def optimize(self, a, obj_func):
 
         p = np.random.random(self.woa_param['n_whale'])
         r = np.random.random(self.woa_param['n_whale'])
@@ -78,7 +78,7 @@ class WOGenerator(BaseGenerator):
         bubbleNet_idx = np.where(p >= 0.5)
         self.search(search_idx, A[search_idx], C[search_idx])
         self.encircle(encircle_idx, A[encircle_idx], C[encircle_idx])
-        self.bubble_net(bubbleNet_idx, b)
+        self.bubble_net(bubbleNet_idx)
         self.whale['fitness'] = obj_func(self.whale['position'])
 
     def run(self, visualize=True):
@@ -92,8 +92,7 @@ class WOGenerator(BaseGenerator):
             for n in range(self.woa_param['n_iter']):
                 print("Iteration = ", n, " f(x) = ", self.prey['fitness'])
                 a = 2 - n * (2 / self.woa_param['n_iter'])
-                b = -1 + n * (-1 / self.woa_param['n_iter'])
-                self.optimize(a, b, obj_func)
+                self.optimize(a, obj_func)
                 self.update_prey()
             f_value, cf = self.prey['fitness'].squeeze(), self.prey['position'].squeeze()
             self.cf.append(cf)
