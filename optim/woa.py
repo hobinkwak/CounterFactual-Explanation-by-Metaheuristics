@@ -70,9 +70,10 @@ class WOGenerator(BaseGenerator):
     def optimize(self, a, obj_func):
 
         p = np.random.random(self.woa_param['n_whale'])
-        r = np.random.random(self.woa_param['n_whale'])
-        A = 2 * a * r - a
-        C = 2 * r
+        r1 = np.random.random(self.woa_param['n_whale'])
+        r2 = np.random.random(self.woa_param['n_whale'])
+        A = 2 * a * r1 - a
+        C = 2 * r2
         search_idx = np.where((p < 0.5) & (abs(A) > 1))
         encircle_idx = np.where((p < 0.5) & (abs(A) <= 1))
         bubbleNet_idx = np.where(p >= 0.5)
